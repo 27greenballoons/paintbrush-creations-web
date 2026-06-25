@@ -31,7 +31,7 @@ public/_headers         security headers (strict CSP, HSTS, etc.)
    verify it** (Cloudflare emails a confirmation link).
 3. Store that address as a Worker secret so it stays out of this repo:
    ```bash
-   npx wrangler secret put DESTINATION_EMAIL
+   npx wrangler secret put DESTINATION_ADDRESS
    ```
 4. Set `SENDER_ADDRESS` (the `From` address) as a Worker secret too, so no email
    is committed: Worker → Settings → Variables and Secrets → add `SENDER_ADDRESS`
@@ -63,7 +63,7 @@ For local `npm run dev`, create a **gitignored** `.dev.vars` file with your secr
 
 ```
 SENDER_ADDRESS=contact@yourdomain.com
-DESTINATION_EMAIL=you@example.com
+DESTINATION_ADDRESS=you@example.com
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 ```
 
@@ -84,8 +84,8 @@ Workers**; Cloudflare runs `npm run deploy` on push.
   name/email before they touch any header; the message is body-only.
 - **Bots:** Cloudflare Turnstile (verified server-side) + a hidden honeypot.
 - **Floods:** native per-IP rate limit on the form.
-- **Abuse:** the Worker only ever sends to `DESTINATION_EMAIL` (a verified Email
+- **Abuse:** the Worker only ever sends to `DESTINATION_ADDRESS` (a verified Email
   Routing address), so the form can only email the studio.
-- **Secrets:** `SENDER_ADDRESS`, `DESTINATION_EMAIL`, and `TURNSTILE_SECRET` are
+- **Secrets:** `SENDER_ADDRESS`, `DESTINATION_ADDRESS`, and `TURNSTILE_SECRET` are
   all set in the dashboard (or via `wrangler secret put`) and never committed.
   No email address appears anywhere in the repo or on the page.

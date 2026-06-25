@@ -73,13 +73,13 @@ async function handleContact(request, env) {
   if (!isEmail(email)) {
     return reply(wantsJson, false, "That email address looks off.", 400);
   }
-  if (!env.SENDER_ADDRESS || !env.DESTINATION_EMAIL) {
+  if (!env.SENDER_ADDRESS || !env.DESTINATION_ADDRESS) {
     return reply(wantsJson, false, "The contact form is not fully configured yet.", 500);
   }
 
   const mime = createMimeMessage();
   mime.setSender({ name: "Paintbrush Creations site", addr: env.SENDER_ADDRESS });
-  mime.setRecipient(env.DESTINATION_EMAIL);
+  mime.setRecipient(env.DESTINATION_ADDRESS);
   mime.setHeader("Reply-To", `${name} <${email}>`);
   mime.setSubject("New message from Paintbrush Creations");
   mime.addMessage({
@@ -89,7 +89,7 @@ async function handleContact(request, env) {
 
   try {
     await env.CONTACT_EMAIL.send(
-      new EmailMessage(env.SENDER_ADDRESS, env.DESTINATION_EMAIL, mime.asRaw())
+      new EmailMessage(env.SENDER_ADDRESS, env.DESTINATION_ADDRESS, mime.asRaw())
     );
   } catch (err) {
     console.error("send_email failed:", err && err.message);
