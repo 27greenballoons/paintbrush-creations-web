@@ -29,8 +29,8 @@ namespace_id = "1001"
 limit = 5
 period = 60
 
-[vars]
-# The "From" address. Must be on a domain in THIS Cloudflare account that has
-# Email Routing enabled. Change this to your real domain before deploying,
-# e.g. "contact@paintbrushcreations.com".
-SENDER_ADDRESS = "contact@example.com"
+# SENDER_ADDRESS (the "From" address) is intentionally NOT committed here, so no
+# email address lives in the repo. Set it in the dashboard with the other secrets:
+#   Worker > Settings > Variables and Secrets > add SENDER_ADDRESS
+# It must be on a domain in this account with Email Routing enabled,
+# e.g. contact@yourdomain.com (the mailbox need not exist).

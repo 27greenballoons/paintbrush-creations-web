@@ -33,8 +33,10 @@ public/_headers         security headers (strict CSP, HSTS, etc.)
    ```bash
    npx wrangler secret put DESTINATION_EMAIL
    ```
-4. In `wrangler.toml`, set `SENDER_ADDRESS` to a `From` address on your domain,
-   e.g. `contact@yourdomain.com` (the mailbox need not exist).
+4. Set `SENDER_ADDRESS` (the `From` address) as a Worker secret too, so no email
+   is committed: Worker → Settings → Variables and Secrets → add `SENDER_ADDRESS`
+   = an address on your domain, e.g. `contact@yourdomain.com` (mailbox need not
+   exist; the domain must have Email Routing enabled).
 
 ### 2. Turnstile (bot protection)
 1. Dashboard → **Turnstile → Add widget** for your domain.
@@ -60,6 +62,7 @@ npm run deploy   # builds CSS, publishes to Cloudflare
 For local `npm run dev`, create a **gitignored** `.dev.vars` file with your secrets:
 
 ```
+SENDER_ADDRESS=contact@yourdomain.com
 DESTINATION_EMAIL=you@example.com
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 ```
@@ -83,6 +86,6 @@ Workers**; Cloudflare runs `npm run deploy` on push.
 - **Floods:** native per-IP rate limit on the form.
 - **Abuse:** the Worker only ever sends to `DESTINATION_EMAIL` (a verified Email
   Routing address), so the form can only email the studio.
-- **Secrets:** `TURNSTILE_SECRET` and `DESTINATION_EMAIL`, both stored via
-  `wrangler secret put` (or the dashboard) and never committed. The studio email
-  appears nowhere in the repo or on the page.
+- **Secrets:** `SENDER_ADDRESS`, `DESTINATION_EMAIL`, and `TURNSTILE_SECRET` are
+  all set in the dashboard (or via `wrangler secret put`) and never committed.
+  No email address appears anywhere in the repo or on the page.
