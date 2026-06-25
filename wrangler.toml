@@ -1,6 +1,9 @@
-name = "paintbrush-creations"
+name = "paintbrush-creations-web"
 main = "src/index.js"
 compatibility_date = "2025-09-01"
+# nodejs_compat: mimetext (for building the email MIME) pulls in Node built-ins
+# like "path"/"node:os", which Workers only expose with this flag.
+compatibility_flags = ["nodejs_compat"]
 
 # Serve the static site from ./public. The Worker (src/index.js) handles
 # /api/contact; everything else is served as a static asset via env.ASSETS.
@@ -8,10 +11,7 @@ compatibility_date = "2025-09-01"
 directory = "./public"
 binding = "ASSETS"
 
-# Cloudflare Email Routing send_email binding. The destination MUST be a
-# verified address in your Email Routing setup (Dashboard > your domain >
-# Email > Email Routing > Destination addresses). Locking it here means the
-# form can only ever email this one address.
+# Cloudflare Email Routing send_email binding.
 # The recipient is supplied at runtime via the DESTINATION_EMAIL secret, so no
 # email address is committed to this (public) repo. It must be a verified Email
 # Routing destination. Omitting destination_address lets the binding send to any
