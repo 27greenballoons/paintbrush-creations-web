@@ -54,7 +54,7 @@ async function handleContact(request, env) {
 
   // Turnstile: verify the bot-challenge token before doing any work.
   if (!env.TURNSTILE_SECRET) {
-    return reply(wantsJson, false, "The contact form is not fully configured yet.", 500);
+    return reply(wantsJson, false, "DEBUG: server is missing TURNSTILE_SECRET.", 500);
   }
   const token = str(form.get("cf-turnstile-response"));
   if (!(await verifyTurnstile(token, env.TURNSTILE_SECRET, ip))) {
@@ -73,8 +73,11 @@ async function handleContact(request, env) {
   if (!isEmail(email)) {
     return reply(wantsJson, false, "That email address looks off.", 400);
   }
-  if (!env.SENDER_ADDRESS || !env.DESTINATION_ADDRESS) {
-    return reply(wantsJson, false, "The contact form is not fully configured yet.", 500);
+  if (!env.SENDER_ADDRESS) {
+    return reply(wantsJson, false, "DEBUG: server is missing SENDER_ADDRESS.", 500);
+  }
+  if (!env.DESTINATION_ADDRESS) {
+    return reply(wantsJson, false, "DEBUG: server is missing DESTINATION_ADDRESS.", 500);
   }
 
   const mime = createMimeMessage();
@@ -93,7 +96,7 @@ async function handleContact(request, env) {
     );
   } catch (err) {
     console.error("send_email failed:", err && err.message);
-    return reply(wantsJson, false, "Could not send right now. Please try again shortly.", 502);
+    return reply(wantsJson, false, "DEBUG send failed: " + (err && err.message ? err.message : "unknown error"), 502);
   }
 
   return reply(wantsJson, true, "Thanks. Your message is on its way.", 200);
