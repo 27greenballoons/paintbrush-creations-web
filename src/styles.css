@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Paper texture: a faint grain over the whole canvas ---- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+.dark body::before { opacity: 0.4; mix-blend-mode: overlay; }
+
+/* Anchors clear the sticky nav. */
+section[id] { scroll-margin-top: 5.5rem; }
+
+/* ---- "Sticker" shadow: a solid offset shadow for the handmade, cut-out look ---- */
+.paint-shadow { box-shadow: 6px 6px 0 0 rgba(43,38,34,0.9); }
+.dark .paint-shadow { box-shadow: 6px 6px 0 0 rgba(0,0,0,0.5); }
+.paint-shadow-sm { box-shadow: 4px 4px 0 0 rgba(43,38,34,0.85); }
+.dark .paint-shadow-sm { box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5); }
+
+/* ---- Tape strip on top of cards ---- */
+.tape::before {
+  content: '';
+  position: absolute;
+  top: -0.7rem; left: 50%;
+  width: 5.5rem; height: 1.4rem;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(244,181,63,0.45);
+  border: 1px dashed rgba(43,38,34,0.25);
+  border-radius: 2px;
+}
+
+/* ---- Brush-stroke highlight behind a word ---- */
+.swash { position: relative; display: inline-block; z-index: 0; }
+.swash::after {
+  content: '';
+  position: absolute; z-index: -1;
+  left: -4%; right: -4%; bottom: 0.04em; height: 0.5em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M6 24C66 12 132 30 192 20s96-12 102 2-58 22-128 18S40 44 14 38 0 28 6 24Z' fill='%2323b3a3'/%3E%3C/svg%3E") no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.85;
+}
+
+/* ---- Scroll reveal ---- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}

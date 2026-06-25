@@ -1,0 +1,17 @@
+{
+  "name": "paintbrush-creations",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./src/styles.css -o ./public/styles.css --minify",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "mimetext": "^3.0.27"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17",
+    "wrangler": "^4.36.0"
+  }
+}

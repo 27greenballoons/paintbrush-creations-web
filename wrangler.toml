@@ -1,0 +1,36 @@
+name = "paintbrush-creations"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# Serve the static site from ./public. The Worker (src/index.js) handles
+# /api/contact; everything else is served as a static asset via env.ASSETS.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# Cloudflare Email Routing send_email binding. The destination MUST be a
+# verified address in your Email Routing setup (Dashboard > your domain >
+# Email > Email Routing > Destination addresses). Locking it here means the
+# form can only ever email this one address.
+# The recipient is supplied at runtime via the DESTINATION_EMAIL secret, so no
+# email address is committed to this (public) repo. It must be a verified Email
+# Routing destination. Omitting destination_address lets the binding send to any
+# verified destination; the Worker only ever uses DESTINATION_EMAIL.
+[[send_email]]
+name = "CONTACT_EMAIL"
+
+# Native Workers rate limiting (requires Wrangler >= 4.36). Caps contact-form
+# submissions per client IP; enforced in src/index.js. period must be 10 or 60;
+# namespace_id is any integer unique to this Worker.
+[[ratelimits]]
+name = "CONTACT_RATELIMIT"
+namespace_id = "1001"
+[ratelimits.simple]
+limit = 5
+period = 60
+
+[vars]
+# The "From" address. Must be on a domain in THIS Cloudflare account that has
+# Email Routing enabled. Change this to your real domain before deploying,
+# e.g. "contact@paintbrushcreations.com".
+SENDER_ADDRESS = "contact@example.com"

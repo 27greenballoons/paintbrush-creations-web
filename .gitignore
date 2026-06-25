@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# wrangler / cloudflare local state + LOCAL SECRETS (never commit these)
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# env / secrets
+.env
+.env.*
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# os / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
