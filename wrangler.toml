@@ -4,6 +4,9 @@ compatibility_date = "2025-09-01"
 # nodejs_compat: mimetext (for building the email MIME) pulls in Node built-ins
 # like "path"/"node:os", which Workers only expose with this flag.
 compatibility_flags = ["nodejs_compat"]
+# Keep dashboard-set secrets/variables from being wiped on each deploy. The Git
+# build runs `wrangler deploy`, which by default deletes vars not in this file.
+keep_vars = true
 
 # Serve the static site from ./public. The Worker (src/index.js) handles
 # /api/contact; everything else is served as a static asset via env.ASSETS.
