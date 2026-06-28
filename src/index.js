@@ -57,8 +57,9 @@ async function handleContact(request, env) {
     return reply(wantsJson, false, "DEBUG: server is missing TURNSTILE_SECRET.", 500);
   }
   const token = str(form.get("cf-turnstile-response"));
-  if (!(await verifyTurnstile(token, env.TURNSTILE_SECRET, ip))) {
-    return reply(wantsJson, false, "Verification failed. Please complete the challenge and try again.", 400);
+  const ts = await verifyTurnstile(token, env.TURNSTILE_SECRET, ip);
+  if (!ts.success) {
+    return reply(wantsJson, false, "DEBUG turnstile failed [" + ts.codes + "].", 400);
   }
 
   // header() strips CR/LF + all control chars, so nothing can be injected into an
@@ -105,7 +106,7 @@ async function handleContact(request, env) {
 // ---- helpers ---------------------------------------------------------------
 
 async function verifyTurnstile(token, secret, ip) {
-  if (!token) return false;
+  if (!token) return { success: false, codes: "no-token-from-browser" };
   const body = new FormData();
   body.append("secret", secret);
   body.append("response", token);
@@ -116,9 +117,9 @@ async function verifyTurnstile(token, secret, ip) {
       body,
     });
     const data = await res.json();
-    return data.success === true;
+    return { success: data.success === true, codes: (data["error-codes"] || []).join(",") || "none" };
   } catch {
-    return false;
+    return { success: false, codes: "siteverify-fetch-error" };
   }
 }
 

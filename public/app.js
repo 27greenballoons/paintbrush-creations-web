@@ -35,12 +35,14 @@ if (contactForm) {
   contactForm.addEventListener("submit", function (e) {
     e.preventDefault();
     formStatus.textContent = "Sending…";
+    var lastStatus = 0;
     fetch(contactForm.action, {
       method: "POST",
       headers: { Accept: "application/json" },
       body: new FormData(contactForm),
     })
       .then(function (res) {
+        lastStatus = res.status;
         return res.json().catch(function () {
           return {};
         });
@@ -52,8 +54,11 @@ if (contactForm) {
           if (window.turnstile) window.turnstile.reset();
           formStatus.textContent = "Thanks. Your message is on its way.";
         } else {
+          // Reset the widget so a retry gets a fresh token (Turnstile tokens are
+          // single-use; reusing one yields a "timeout-or-duplicate" failure).
+          if (window.turnstile) window.turnstile.reset();
           formStatus.textContent =
-            data && data.message ? String(data.message) : "Something went wrong. Please try again.";
+            data && data.message ? String(data.message) : "Something went wrong (HTTP " + lastStatus + ").";
         }
       })
       .catch(function () {
